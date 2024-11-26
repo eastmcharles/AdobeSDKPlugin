@@ -30,4 +30,10 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButtonLoad();
+	CString m_apikey;
+	CComboBox m_caseComboBox;
+	CStringList m_caseIdList;
+	CStringList m_caseTitleList;
 };
