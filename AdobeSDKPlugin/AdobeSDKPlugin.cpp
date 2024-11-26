@@ -7,6 +7,10 @@
 #include "AdobeSDKPlugin.h"
 #include "AdobeSDKPluginDlg.h"
 
+#include <afxinet.h> // For CInternetSession and CHttpFile
+#include <afxwin.h>  // For CString
+#include <winhttp.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -63,7 +67,7 @@ BOOL CAdobeSDKPluginApp::InitInstance()
 
 	// Create the shell manager, in case the dialog contains
 	// any shell tree view or shell list view controls.
-	CShellManager *pShellManager = new CShellManager;
+	CShellManager* pShellManager = new CShellManager;
 
 	// Activate "Windows Native" visual manager for enabling themes in MFC controls
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
@@ -111,3 +115,36 @@ BOOL CAdobeSDKPluginApp::InitInstance()
 	return FALSE;
 }
 
+std::string GetResponseData(CString hostDomain, CString urlPath, CString apikey, CFile* pTargetFile) {
+	CInternetSession session(_T("AdobeSDKPluginSession"));
+	CHttpConnection* pServer = session.GetHttpConnection(hostDomain);
+	CHttpFile* pFile = pServer->OpenRequest(CHttpConnection::HTTP_VERB_GET, urlPath);
+	CString header = L"X-Api-Key: " + apikey;
+	pFile->AddRequestHeaders(header);
+	pFile->SendRequest();
+	DWORD bytesRead = 0;
+	char buffer[4096];
+	CStringA responseData;
+
+	// Read the response
+	while ((bytesRead = pFile->Read(buffer, sizeof(buffer) - 1)) > 0)
+	{
+		buffer[bytesRead] = '\0'; // Null-terminate the buffer
+		responseData.Append(buffer, bytesRead);
+		pTargetFile->Write(buffer, bytesRead);
+	}
+
+	std::string jsonResponse = responseData;
+
+	if (pFile) {
+		pFile->Close();
+		delete pFile;
+	}
+
+	if (pServer) {
+		pServer->Close();
+		delete pServer;
+	}
+
+	return jsonResponse;
+}

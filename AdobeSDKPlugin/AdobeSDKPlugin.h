@@ -3,7 +3,8 @@
 //
 
 #pragma once
-
+#include <string>    // For std::string
+#include <iostream>
 #ifndef __AFXWIN_H__
 	#error "include 'pch.h' before including this file for PCH"
 #endif
@@ -23,10 +24,10 @@ public:
 // Overrides
 public:
 	virtual BOOL InitInstance();
-
+	
 // Implementation
 
 	DECLARE_MESSAGE_MAP()
 };
-
+std::string GetResponseData(CString hostDomain, CString urlPath, CString apikey, CFile* pTargetFile = NULL);
 extern CAdobeSDKPluginApp theApp;
