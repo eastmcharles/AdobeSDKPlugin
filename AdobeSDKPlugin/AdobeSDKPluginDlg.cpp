@@ -36,7 +36,6 @@ void CAdobeSDKPluginDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_API_KEY, m_apikey);
-	DDX_Control(pDX, IDC_COMBO_CASELIST, m_caseComboBox);
 }
 
 BEGIN_MESSAGE_MAP(CAdobeSDKPluginDlg, CDialogEx)
@@ -117,8 +116,7 @@ void CAdobeSDKPluginDlg::OnBnClickedButtonLoad()
 	else {
 
 		theApp.WriteProfileStringW(PROFILE_SECTION, PROFILE_APIKEY_ENTRY, m_apikey);
-		m_caseComboBox.ResetContent(); m_caseIdList.RemoveAll(); m_caseTitleList.RemoveAll();
-
+		
 		BeginWaitCursor();
 		std::string jsonResponse = GetResponseData(API_HOST_DOMAIN, CASES_LIST_URL_PATH, m_apikey);
 		EndWaitCursor();
@@ -139,9 +137,7 @@ void CAdobeSDKPluginDlg::OnBnClickedButtonLoad()
 					CString title(item["title"].get<std::string>().c_str());
 					m_caseIdList.Add(id);
 					m_caseTitleList.Add(title);
-					m_caseComboBox.AddString(title);
 				}
-				m_caseComboBox.SetCurSel(0);
 			}
 		}
 		catch (const json::parse_error& e) {
@@ -158,43 +154,43 @@ void CAdobeSDKPluginDlg::OnBnClickedButtonOpen()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
-	if (m_caseComboBox.GetCurSel() == -1) {
-		MessageBox(L"Please select case!", NULL, MB_OK | MB_ICONERROR);
-	}
-	else {
-		int sel = m_caseComboBox.GetCurSel();
-		CString id = m_caseIdList[sel];
-		CString title = m_caseTitleList[sel];
+	//if (m_caseComboBox.GetCurSel() == -1) {
+	//	MessageBox(L"Please select case!", NULL, MB_OK | MB_ICONERROR);
+	//}
+	//else {
+	//	int sel = m_caseComboBox.GetCurSel();
+	//	CString id = m_caseIdList[sel];
+	//	CString title = m_caseTitleList[sel];
 
-		BeginWaitCursor();
-		std::string jsonResponse = GetResponseData(API_HOST_DOMAIN, CString(CASES_LIST_URL_PATH) + L"/" + id + L"/documents", m_apikey);
-		EndWaitCursor();
+	//	BeginWaitCursor();
+	//	std::string jsonResponse = GetResponseData(API_HOST_DOMAIN, CString(CASES_LIST_URL_PATH) + L"/" + id + L"/documents", m_apikey);
+	//	EndWaitCursor();
 
-		try {
-			auto json = json::parse(jsonResponse);
-			if (json.contains("message")) {
-				MessageBox(CString(json["message"].get<std::string>().c_str()), NULL, MB_OK | MB_ICONERROR);
-			}
-			else {
-				// Analyze the response
-				int totalItems = json["totalItems"];
-				MessageBox(CString("Total Documents: ") + std::to_string(totalItems).c_str());
+	//	try {
+	//		auto json = json::parse(jsonResponse);
+	//		if (json.contains("message")) {
+	//			MessageBox(CString(json["message"].get<std::string>().c_str()), NULL, MB_OK | MB_ICONERROR);
+	//		}
+	//		else {
+	//			// Analyze the response
+	//			int totalItems = json["totalItems"];
+	//			MessageBox(CString("Total Documents: ") + std::to_string(totalItems).c_str());
 
-				for (const auto& item : json["items"])
-				{
-					CString mediaUrl(item["mediaUrl"].get<std::string>().c_str());
-					CString title(item["title"].get<std::string>().c_str());
-					MessageBox(mediaUrl, title);
-				}
-				m_caseComboBox.SetCurSel(0);
-			}
-		}
-		catch (const json::parse_error& e) {
-			AfxMessageBox(CString("JSON Parse Error: ") + CString(e.what()));
-		}
-		catch (const json::exception& e) {
-			AfxMessageBox(CString("JSON Exception: ") + CString(e.what()));
-		}
-	}
+	//			for (const auto& item : json["items"])
+	//			{
+	//				CString mediaUrl(item["mediaUrl"].get<std::string>().c_str());
+	//				CString title(item["title"].get<std::string>().c_str());
+	//				MessageBox(mediaUrl, title);
+	//			}
+	//			m_caseComboBox.SetCurSel(0);
+	//		}
+	//	}
+	//	catch (const json::parse_error& e) {
+	//		AfxMessageBox(CString("JSON Parse Error: ") + CString(e.what()));
+	//	}
+	//	catch (const json::exception& e) {
+	//		AfxMessageBox(CString("JSON Exception: ") + CString(e.what()));
+	//	}
+	//}
 }
 

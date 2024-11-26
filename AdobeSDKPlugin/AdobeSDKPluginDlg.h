@@ -33,7 +33,6 @@ public:
 	
 	afx_msg void OnBnClickedButtonLoad();
 	CString m_apikey;
-	CComboBox m_caseComboBox;
 	CStringArray m_caseIdList;
 	CStringArray m_caseTitleList;
 	afx_msg void OnBnClickedButtonOpen();

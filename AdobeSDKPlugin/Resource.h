@@ -9,7 +9,6 @@
 #define IDD_DIALOG_PDFVIEW              132
 #define IDC_BUTTON_LOAD                 1000
 #define IDC_EDIT_API_KEY                1001
-#define IDC_COMBO_CASELIST              1002
 #define IDC_BUTTON_OPEN                 1003
 #define IDC_PROGRESS1                   1004
 #define IDC_PDF1                        1005
