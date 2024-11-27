@@ -105,4 +105,5 @@ void CPdfViewDlg::OnLbnDblclkListDoclist()
 void CPdfViewDlg::OpenPdfFile(int sel) {
 	SetWindowText(m_selectedCaseTitle + L" - " + m_arrDocumentItem[sel].m_title);
 	m_pdfView.LoadFile(m_arrDocumentItem[sel].m_filePath);
+	m_pdfView.setShowToolbar(TRUE);
 }
