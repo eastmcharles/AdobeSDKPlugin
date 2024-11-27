@@ -3,8 +3,6 @@
 //
 
 #pragma once
-#include <string>    // For std::string
-#include <iostream>
 #ifndef __AFXWIN_H__
 	#error "include 'pch.h' before including this file for PCH"
 #endif
@@ -20,7 +18,9 @@ class CAdobeSDKPluginApp : public CWinApp
 {
 public:
 	CAdobeSDKPluginApp();
-
+	CStringArray m_caseIdList;
+	CStringArray m_caseTitleList;
+	CString m_apikey;
 // Overrides
 public:
 	virtual BOOL InitInstance();
@@ -30,4 +30,9 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 std::string GetResponseData(CString hostDomain, CString urlPath, CString apikey, CFile* pTargetFile = NULL);
+CString GetCasesDirectoryPath();
+CString GetCaseDirectoryPath(const CString& caseName);
+CString GenerateRandomSuffix();
+bool DeleteCasesDirectory();
+
 extern CAdobeSDKPluginApp theApp;

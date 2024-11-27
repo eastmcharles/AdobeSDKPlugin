@@ -29,11 +29,10 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+	CMenu m_menu;
 public:
 	
 	afx_msg void OnBnClickedButtonLoad();
 	CString m_apikey;
-	CStringArray m_caseIdList;
-	CStringArray m_caseTitleList;
 	afx_msg void OnBnClickedButtonOpen();
 };

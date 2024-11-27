@@ -39,6 +39,12 @@
     <ClInclude Include="CPdfViewDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CDocumentItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPDF_VIEW.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdobeSDKPlugin.cpp">
@@ -54,6 +60,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CPdfViewDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CDocumentItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPDF_VIEW.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

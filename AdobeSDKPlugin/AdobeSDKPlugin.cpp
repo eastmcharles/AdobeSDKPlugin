@@ -6,10 +6,17 @@
 #include "framework.h"
 #include "AdobeSDKPlugin.h"
 #include "AdobeSDKPluginDlg.h"
-
+#include "CPdfViewDlg.h"
 #include <afxinet.h> // For CInternetSession and CHttpFile
 #include <afxwin.h>  // For CString
 #include <winhttp.h>
+
+#include <string>
+#include <random>
+#include <sstream>
+#include <shlobj.h>
+#include <atlstr.h>
+#include <shellapi.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -81,7 +88,7 @@ BOOL CAdobeSDKPluginApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("AdobeSDKPluginAPp"));
 
-	CAdobeSDKPluginDlg dlg;
+	CPdfViewDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
@@ -99,6 +106,8 @@ BOOL CAdobeSDKPluginApp::InitInstance()
 		TRACE(traceAppMsg, 0, "Warning: dialog creation failed, so application is terminating unexpectedly.\n");
 		TRACE(traceAppMsg, 0, "Warning: if you are using MFC controls on the dialog, you cannot #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS.\n");
 	}
+
+	DeleteCasesDirectory();
 
 	// Delete the shell manager created above.
 	if (pShellManager != nullptr)
@@ -131,7 +140,8 @@ std::string GetResponseData(CString hostDomain, CString urlPath, CString apikey,
 	{
 		buffer[bytesRead] = '\0'; // Null-terminate the buffer
 		responseData.Append(buffer, bytesRead);
-		pTargetFile->Write(buffer, bytesRead);
+		if (pTargetFile != NULL)
+			pTargetFile->Write(buffer, bytesRead);
 	}
 
 	std::string jsonResponse = responseData;
@@ -148,3 +158,72 @@ std::string GetResponseData(CString hostDomain, CString urlPath, CString apikey,
 
 	return jsonResponse;
 }
+
+CString GenerateRandomSuffix()
+{
+	GUID guid;
+	CoCreateGuid(&guid);
+	CString guidString;
+	guidString.Format(L"%08X-%04X-%04X-%04X-%012llX",
+		guid.Data1, guid.Data2, guid.Data3,
+		(guid.Data4[0] << 8) | guid.Data4[1],
+		*((unsigned long long*)guid.Data4));
+	return guidString;
+}
+
+CString GetCasesDirectoryPath() {
+	WCHAR appDataPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, appDataPath)))
+	{
+		// Combine the "ApplicationData" folder path with the subdirectories and caseName
+		CString fullPath = CString(appDataPath) + L"\\smartCite\\cases";
+
+		// Create the directory
+		if (CreateDirectoryW(fullPath, NULL) || GetLastError() == ERROR_ALREADY_EXISTS)
+		{
+			return fullPath;
+		}
+	}
+	return L"";
+}
+
+bool DeleteCasesDirectory()
+{
+	CString dirPath = GetCasesDirectoryPath();
+	SHFILEOPSTRUCT fileOp;
+	ZeroMemory(&fileOp, sizeof(fileOp));
+
+	fileOp.wFunc = FO_DELETE;  // Operation is deletion
+	int len = dirPath.GetLength();
+	WCHAR* tmp = new WCHAR[len + 2];
+	wcscpy_s(tmp, len + 1, dirPath);
+	tmp[len] = tmp[len + 1] = L'\0';
+	fileOp.pFrom = tmp;
+	fileOp.fFlags = FOF_NOCONFIRMATION | FOF_SILENT;  // Silent, no confirmation
+
+	int result = SHFileOperation(&fileOp);
+	if (result != 0) {
+		TRACE(L"DeleteDirectory Failed: %d", result);
+	}
+	delete[] tmp;
+	return result == 0;  // Returns 0 on success
+}
+
+CString GetCaseDirectoryPath(const CString& caseName)
+{
+	// Get the path to the "ApplicationData" folder (equivalent to Environment.SpecialFolder.ApplicationData in C#)
+	WCHAR appDataPath[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, 0, appDataPath)))
+	{
+		// Combine the "ApplicationData" folder path with the subdirectories and caseName
+		CString fullPath = CString(appDataPath) + L"\\smartCite\\cases\\" + caseName + L"_" + GenerateRandomSuffix();
+
+		// Create the directory
+		if (SHCreateDirectoryExW(NULL, fullPath, NULL) == ERROR_SUCCESS || GetLastError() == ERROR_ALREADY_EXISTS)
+		{
+			return fullPath;
+		}
+	}
+	return L"";
+}
+

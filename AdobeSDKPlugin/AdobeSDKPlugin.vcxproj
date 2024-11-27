@@ -185,8 +185,10 @@
   <ItemGroup>
     <ClInclude Include="AdobeSDKPlugin.h" />
     <ClInclude Include="AdobeSDKPluginDlg.h" />
+    <ClInclude Include="CDocumentItem.h" />
     <ClInclude Include="CLoadingDlg.h" />
     <ClInclude Include="CPdfViewDlg.h" />
+    <ClInclude Include="CPDF_VIEW.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -195,8 +197,10 @@
   <ItemGroup>
     <ClCompile Include="AdobeSDKPlugin.cpp" />
     <ClCompile Include="AdobeSDKPluginDlg.cpp" />
+    <ClCompile Include="CDocumentItem.cpp" />
     <ClCompile Include="CLoadingDlg.cpp" />
     <ClCompile Include="CPdfViewDlg.cpp" />
+    <ClCompile Include="CPDF_VIEW.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

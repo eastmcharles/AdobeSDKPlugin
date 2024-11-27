@@ -9,5 +9,11 @@
 
 // add headers that you want to pre-compile here
 #include "framework.h"
+#include <string>    // For std::string
+#include <iostream>
+#include "nlohmann/json.hpp" // Adjust the path as necessary
+using json = nlohmann::json; // Create an alias for convenience
 
+#define API_HOST_DOMAIN _T("api.smartcite.povio.dev")
+#define CASES_LIST_URL_PATH L"/api/cases"
 #endif //PCH_H
